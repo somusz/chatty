@@ -6,34 +6,47 @@ class Chat extends Component {
     super(props)
 
     this.state = {
-        username: '',
+        username: this.props.currentUser,
         message: '',
         error: ''
     }
 
-    this.onEnter = this.onEnter.bind(this)
+    this._onEnter = this._onEnter.bind(this)
+    this._onblur = this._onblur.bind(this)
   }
 
-  onEnter(event) {
+  _onEnter(event) {
     if (event.key === 'Enter') {
 
-      let newEntry = {
-        message: event.target.value,
-        username: 'new user'
+      if (event.target.value === '') {
+        alert('say something') //system message
       }
 
-      this.setState(newEntry, () => {
+      else {
 
-        this.props.onNewMessage({
-          currentUser: this.state.username,
-          messages: [{
-            key: '003',
-            username: this.state.username,
-            content: this.state.message
-          }]
+        let newEntry = {
+          message: event.target.value,
+          username: this.state.username
+        }
+
+        this.setState(newEntry, () => {
+
+          this.props.onNewMessage({
+
+            currentUser: { name: newEntry.username },
+            messages: [{
+              key: (Math.random() * 10000000).toString().slice(0,7),
+              username: newEntry.username,
+              content: newEntry.message
+            }]
+          })
         })
-      })
+      }
     }
+  }
+
+  _onblur(event) {
+    this.setState({username: event.target.value})
   }
 
   render() {
@@ -41,9 +54,9 @@ class Chat extends Component {
 
     return (
       <footer className="chatbar">
-        <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={this.props.currentUser} />
+        <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={this.props.currentUser} onBlur={this._onblur} />
 
-        <input className="chatbar-message" onKeyPress={this.onEnter} placeholder="Type a message and hit ENTER" />
+        <input className="chatbar-message" onKeyPress={this._onEnter} placeholder="Type a message and hit ENTER" />
       </footer>
 
     );
