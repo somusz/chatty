@@ -6,9 +6,12 @@ class Chat extends Component {
     super(props)
 
     this.state = {
-        username: this.props.currentUser,
-        message: '',
-        error: ''
+      currentUser: 'Anonymous',
+      message: {
+        key: '',
+        username: '',
+        content: ''
+      },
     }
 
     this._onEnter = this._onEnter.bind(this)
@@ -24,29 +27,27 @@ class Chat extends Component {
 
       else {
 
-        let newEntry = {
-          message: event.target.value,
-          username: this.state.username
-        }
-
-        this.setState(newEntry, () => {
-
-          this.props.onNewMessage({
-
-            currentUser: { name: newEntry.username },
-            messages: [{
-              key: (Math.random() * 10000000).toString().slice(0,7),
-              username: newEntry.username,
-              content: newEntry.message
-            }]
-          })
+        this.setState({
+          message: {
+            key: (Math.random() * 10000000).toString().slice(0,6),
+            username: this.state.currentUser,
+            content: event.target.value
+          } },
+        () => {
+          this.props.onNewMessage(this.state.message)
         })
       }
     }
   }
 
   _onblur(event) {
-    this.setState({username: event.target.value})
+    if (event.target.value) {
+      this.setState( { currentUser: event.target.value })
+    }
+
+    else {
+      this.setState( { currentUser: event.target.defaultValue })
+    }
   }
 
   render() {
@@ -54,7 +55,7 @@ class Chat extends Component {
 
     return (
       <footer className="chatbar">
-        <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={this.props.currentUser} onBlur={this._onblur} />
+        <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue="Anonymous" onBlur={this._onblur} />
 
         <input className="chatbar-message" onKeyPress={this._onEnter} placeholder="Type a message and hit ENTER" />
       </footer>
