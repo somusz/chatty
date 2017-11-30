@@ -6,7 +6,7 @@ class Chat extends Component {
     super(props)
 
     this.state = {
-      currentUser: 'Anonymous',
+      currentUser: this.props.currentUser,
       message: {
         key: '',
         username: '',
@@ -14,11 +14,11 @@ class Chat extends Component {
       },
     }
 
-    this._onEnter = this._onEnter.bind(this)
-    this._onblur = this._onblur.bind(this)
+    this._onMessageEnter = this._onMessageEnter.bind(this)
+    this._onNameEnter = this._onNameEnter.bind(this)
   }
 
-  _onEnter(event) {
+  _onMessageEnter(event) {
     if (event.key === 'Enter') {
 
       if (event.target.value === '') {
@@ -29,7 +29,6 @@ class Chat extends Component {
 
         this.setState({
           message: {
-            key: (Math.random() * 10000000).toString().slice(0,6),
             username: this.state.currentUser,
             content: event.target.value
           } },
@@ -40,24 +39,44 @@ class Chat extends Component {
     }
   }
 
-  _onblur(event) {
-    if (event.target.value) {
-      this.setState( { currentUser: event.target.value })
-    }
+  _onNameEnter(event) {
+    if (event.key === 'Enter') {
 
-    else {
-      this.setState( { currentUser: event.target.defaultValue })
+      let previousUser = this.state.currentUser
+
+      if (event.target.value) {
+
+        if (this.state.currentUser !== event.target.value) {
+
+          this.setState({
+            currentUser: event.target.value,
+            previousUser: previousUser
+          }, () => this.props.onNewUser(this.state))
+
+        }
+      }
+
+      else {
+
+        this.setState({
+          currentUser: event.target.defaultValue,
+          previousUser: previousUser
+        }, () => this.props.onNewUser(this.state))
+
+      }
+
+
+
     }
   }
 
   render() {
-    console.log('rendering chat')
 
     return (
       <footer className="chatbar">
-        <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue="Anonymous" onBlur={this._onblur} />
+        <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue="Anonymous" onKeyPress={this._onNameEnter} />
 
-        <input className="chatbar-message" onKeyPress={this._onEnter} placeholder="Type a message and hit ENTER" />
+        <input className="chatbar-message" onKeyPress={this._onMessageEnter} placeholder="Type a message and hit ENTER" />
       </footer>
 
     );

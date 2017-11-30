@@ -4,9 +4,18 @@ import MessageSystem from './MessageSystem.jsx';
 
 class MessageList extends Component {
 
-  render() {
+  constructor(props) {
+    super(props)
 
-    console.log('rendering MessageList')
+    this.state = {
+      current: '',
+      previous: ''
+    }
+
+  }
+
+
+  render() {
 
     const messageItems = this.props.messages.map( single => {
       return (
@@ -18,12 +27,13 @@ class MessageList extends Component {
       )
     })
 
-
     return (
 
       <main className="messages">
         { messageItems }
-        <MessageSystem />
+        { this.props.users.previous &&
+          <MessageSystem current={this.props.users.current} previous={this.props.users.previous} />
+        }
       </main>
 
     );

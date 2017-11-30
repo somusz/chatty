@@ -9,37 +9,28 @@ class App extends Component {
     super(props);
 
     this.state = {
-      // currentUser: { name: 'Anonymous' },
-      messages: [
-        {
-          key: '1',
-          username: 'bob',
-          content: 'first message'
-        },
-        {
-          key: '2',
-          username: 'rob',
-          content: 'second message'
-        }
-      ]
+      users: { current: 'Anonymous', previous: '' },
+      messages: []
     }
     this.onNewMessage = this.onNewMessage.bind(this)
-  }
-
-  componentWillMount() {
-    console.log('chatty says: app created WebSocket to server')
+    this.onNewUser = this.onNewUser.bind(this)
   }
 
   onNewMessage = (message) => {
     this.socket.send(JSON.stringify(message))
   }
 
+  onNewUser = (names) => {
+    this.setState({
+      users: {
+        current: names.currentUser,
+        previous: names.previousUser
+      }
+    })
+  }
+
   componentDidMount() {
     this.socket = new WebSocket("ws://localhost:3001")
-
-    this.socket.onopen = () => {
-      console.log('chatty says: onopen')
-    }
 
     this.socket.onmessage = (message) => {
       this.setState({
@@ -50,18 +41,17 @@ class App extends Component {
 
 
   render() {
-    console.log('rendering app')
-    console.log('state when rendering', this.state)
     return (
     <div>
       <Nav />
-      <MessageList messages={this.state.messages} />
-      <Chat onNewMessage={this.onNewMessage} />
+      <MessageList messages={this.state.messages} users={this.state.users} />
+      <Chat onNewMessage={this.onNewMessage} currentUser={this.state.users.current} onNewUser={this.onNewUser} />
     </div>
     );
   }
 }
 // this.socket.close() unmount
+
 
 export default App;
 
