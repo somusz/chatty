@@ -28,15 +28,27 @@ wss.broadcast = function broadcast(data) {
 wss.on('connection', (ws) => {
   console.log('Client connected');
 
+  newUser = {
+    message: { type : 'log' },
+    count: wss.clients.size
+  }
+
+  wss.broadcast(newUser)
+
+  ws._ultron.color = `#${Math.floor(Math.random()*16777215).toString(16)}`
+
   ws.on('message', function (messageIn) {
     const messageParsed = JSON.parse(messageIn)
 
-    messageParsed.key = uuidv4()
+    const findColor = (user) => {
+      return user.userID === messageIn.userID
+    }
+
+    messageParsed.message.color = ws._ultron.color
+    messageParsed.message.key = uuidv4()
 
     wss.broadcast(messageParsed)
   })
-
-
 
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.

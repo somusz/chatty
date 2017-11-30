@@ -11,9 +11,7 @@ class MessageList extends Component {
       current: '',
       previous: ''
     }
-
   }
-
 
   render() {
 
@@ -32,6 +30,7 @@ class MessageList extends Component {
           <Message
             key={single.key}
             username={single.username}
+            color={single.color}
             content={single.content}
           />
         )

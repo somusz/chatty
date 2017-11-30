@@ -9,6 +9,8 @@ class App extends Component {
     super(props);
 
     this.state = {
+      userCount: 0,
+      currentUser: 'Anonymous',
       messages: []
     }
     this.onNewMessage = this.onNewMessage.bind(this)
@@ -24,9 +26,21 @@ class App extends Component {
     this.socket.onmessage = (message) => {
       const data = JSON.parse(message.data)
 
-      this.setState({
-        messages: this.state.messages.concat([data])
-      })
+      switch (data.message.type) {
+        case 'log':
+          this.setState({
+            userCount: data.count
+          })
+          break;
+        case 'postMessage':
+        case 'postNotification':
+          this.setState({
+            messages: this.state.messages.concat([data.message])
+          })
+          break;
+        default:
+          throw new Error('Unknown message type:', data.message.type)
+      }
 
     }
   }
@@ -34,14 +48,13 @@ class App extends Component {
   render() {
     return (
     <div>
-      <Nav />
+      <Nav userCount={this.state.userCount} />
       <MessageList messages={this.state.messages} />
-      <Chat onNewMessage={this.onNewMessage} />
+      <Chat onNewMessage={this.onNewMessage} currentUser={this.state.currentUser} />
     </div>
     );
   }
 }
-// this.socket.close() unmount
 
 
 export default App;
