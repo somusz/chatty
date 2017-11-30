@@ -9,43 +9,34 @@ class App extends Component {
     super(props);
 
     this.state = {
-      users: { current: 'Anonymous', previous: '' },
       messages: []
     }
     this.onNewMessage = this.onNewMessage.bind(this)
-    this.onNewUser = this.onNewUser.bind(this)
   }
 
   onNewMessage = (message) => {
     this.socket.send(JSON.stringify(message))
   }
 
-  onNewUser = (names) => {
-    this.setState({
-      users: {
-        current: names.currentUser,
-        previous: names.previousUser
-      }
-    })
-  }
-
   componentDidMount() {
     this.socket = new WebSocket("ws://localhost:3001")
 
     this.socket.onmessage = (message) => {
+      const data = JSON.parse(message.data)
+
       this.setState({
-        messages: this.state.messages.concat([JSON.parse(message.data)])
+        messages: this.state.messages.concat([data])
       })
+
     }
   }
-
 
   render() {
     return (
     <div>
       <Nav />
-      <MessageList messages={this.state.messages} users={this.state.users} />
-      <Chat onNewMessage={this.onNewMessage} currentUser={this.state.users.current} onNewUser={this.onNewUser} />
+      <MessageList messages={this.state.messages} />
+      <Chat onNewMessage={this.onNewMessage} />
     </div>
     );
   }

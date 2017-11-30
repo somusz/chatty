@@ -18,22 +18,30 @@ class MessageList extends Component {
   render() {
 
     const messageItems = this.props.messages.map( single => {
-      return (
-        <Message
-          key={single.key}
-          username={single.username}
-          content={single.content}
-        />
-      )
+      if (single.type === 'postNotification') {
+        return (
+          <MessageSystem
+            key={single.key}
+            content={single.content}
+          />
+        )
+      }
+
+      else {
+        return (
+          <Message
+            key={single.key}
+            username={single.username}
+            content={single.content}
+          />
+        )
+      }
     })
 
     return (
 
       <main className="messages">
         { messageItems }
-        { this.props.users.previous &&
-          <MessageSystem current={this.props.users.current} previous={this.props.users.previous} />
-        }
       </main>
 
     );

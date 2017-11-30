@@ -5,7 +5,7 @@ class MessageSystem extends Component {
 
     return (
       <div className="message system">
-        {this.props.previous} changed his/her name to {this.props.current}
+        <span className="message-content">{this.props.content}</span>
       </div>
     )
   }

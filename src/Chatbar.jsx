@@ -6,8 +6,9 @@ class Chat extends Component {
     super(props)
 
     this.state = {
-      currentUser: this.props.currentUser,
+      currentUser: 'Anonymous',
       message: {
+        type: '',
         key: '',
         username: '',
         content: ''
@@ -22,13 +23,14 @@ class Chat extends Component {
     if (event.key === 'Enter') {
 
       if (event.target.value === '') {
-        alert('say something') //system message
+        alert('say something')
       }
 
       else {
 
         this.setState({
           message: {
+            type: 'postMessage',
             username: this.state.currentUser,
             content: event.target.value
           } },
@@ -50,23 +52,26 @@ class Chat extends Component {
 
           this.setState({
             currentUser: event.target.value,
-            previousUser: previousUser
-          }, () => this.props.onNewUser(this.state))
+            message: {
+              type: 'postNotification',
+              content: `${previousUser} has changed his/her username to ${event.target.value}`
+            }
+          }, () => this.props.onNewMessage(this.state.message))
 
         }
       }
 
       else {
-
-        this.setState({
-          currentUser: event.target.defaultValue,
-          previousUser: previousUser
-        }, () => this.props.onNewUser(this.state))
-
+        if (this.state.currentUser !== event.target.defaultValue) {
+          this.setState({
+            currentUser: event.target.defaultValue,
+            message: {
+              type: 'postNotification',
+              content: `${previousUser} has changed his/her username to ${event.target.defaultValue}`
+            }
+          }, () => this.props.onNewMessage(this.state.message))
+        }
       }
-
-
-
     }
   }
 

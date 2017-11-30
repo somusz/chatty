@@ -31,14 +31,9 @@ wss.on('connection', (ws) => {
   ws.on('message', function (messageIn) {
     const messageParsed = JSON.parse(messageIn)
 
-    const messageOut =
-      {
-        key: uuidv4(),
-        username: messageParsed.username,
-        content: messageParsed.content
-      }
+    messageParsed.key = uuidv4()
 
-    wss.broadcast(messageOut)
+    wss.broadcast(messageParsed)
   })
 
 
