@@ -18,6 +18,7 @@ const server = express()
 const wss = new SocketServer({ server });
 
 wss.broadcast = function broadcast(data) {
+  console.log('data at broadcast', data)
   wss.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
       client.send(JSON.stringify(data));
@@ -38,16 +39,23 @@ wss.on('connection', (ws) => {
   ws._ultron.color = `#${Math.floor(Math.random()*16777215).toString(16)}`
 
   ws.on('message', function (messageIn) {
-    const messageParsed = JSON.parse(messageIn)
+    const contentChecker = (message) => {
 
-    const findColor = (user) => {
-      return user.userID === messageIn.userID
+      const messageParsed = JSON.parse(message)
+      const messageOut = messageParsed
+
+      messageOut.message.color = ws._ultron.color
+      messageOut.message.key = uuidv4()
+
+      if (messageParsed.message.content.match(/^http(s)?:(\S+)(jpg|png|gif)$/) ) {
+        // messageOut.message.type = 'postImage'
+        messageOut.message.image = `<img class="message-image" src="${messageParsed.message.content}" alt="" />`
+      }
+
+      return messageOut
     }
 
-    messageParsed.message.color = ws._ultron.color
-    messageParsed.message.key = uuidv4()
-
-    wss.broadcast(messageParsed)
+    wss.broadcast(contentChecker(messageIn))
   })
 
 

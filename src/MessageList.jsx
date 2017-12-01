@@ -32,6 +32,7 @@ class MessageList extends Component {
             username={single.username}
             color={single.color}
             content={single.content}
+            image={single.image}
           />
         )
       }

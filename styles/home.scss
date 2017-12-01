@@ -41,6 +41,7 @@
     .message {
       display: flex;
       padding: 5px;
+      max-height: 300px;
     }
 
     .message.system {
@@ -62,6 +63,19 @@
     .message-username {
       flex: 2;
       font-weight: 700;
+      float: left;
+      max-width: 30%;
+    }
+
+    .message-image {
+      position: absolute;
+      height: 250px;
+      border: 1px solid grey;
+    }
+
+    .message-image-container {
+      position: relative;
+      height: 300px;
     }
 
     .navbar {

@@ -30,6 +30,7 @@ class Chat extends Component {
         () => {
           this.props.onNewMessage(this.state)
         })
+        event.target.value = ''
       }
     }
   }
