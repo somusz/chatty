@@ -17,8 +17,8 @@ const server = express()
 // Create the WebSockets server
 const wss = new SocketServer({ server });
 
+//broadcast data to all open clients as JSON
 wss.broadcast = function broadcast(data) {
-  console.log('data at broadcast', data)
   wss.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
       client.send(JSON.stringify(data));
@@ -26,9 +26,11 @@ wss.broadcast = function broadcast(data) {
   });
 };
 
+//events on connection
 wss.on('connection', (ws) => {
   console.log('Client connected');
 
+//upon connection of a new user, the overall count of users are broadcasted
   newUser = {
     message: { type : 'log' },
     count: wss.clients.size
@@ -36,25 +38,35 @@ wss.on('connection', (ws) => {
 
   wss.broadcast(newUser)
 
+//setting a random color to users through manipulating websocket properties
   ws._ultron.color = `#${Math.floor(Math.random()*16777215).toString(16)}`
 
+//events upon messages coming into the server
   ws.on('message', function (messageIn) {
+
+//function checks the content if it's an image
     const contentChecker = (message) => {
 
       const messageParsed = JSON.parse(message)
       const messageOut = messageParsed
+      const regex = /(http(s)?:(\S+)\.(jpg|png|gif)$)/g;
+      let matches = regex.exec(messageParsed.message.content)
 
+
+//the outgoing message carries the users' assigned color and a unique key
       messageOut.message.color = ws._ultron.color
       messageOut.message.key = uuidv4()
 
-      if (messageParsed.message.content.match(/^http(s)?:(\S+)(jpg|png|gif)$/) ) {
-        // messageOut.message.type = 'postImage'
-        messageOut.message.image = `<img class="message-image" src="${messageParsed.message.content}" alt="" />`
+//if the input message is an image, a new html element is created and passed along while the non-image string remains
+      if (matches) {
+        messageOut.message.image = `<img class="message-image" src="${matches[1]}" alt="" />`
+        messageOut.message.content = messageOut.message.content.replace(matches[1],'')
       }
 
       return messageOut
     }
 
+//broadcast and the contentChecker functions are called on the incoming message
     wss.broadcast(contentChecker(messageIn))
   })
 

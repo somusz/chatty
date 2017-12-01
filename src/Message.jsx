@@ -3,13 +3,17 @@ import React, {Component} from 'react';
 class Message extends Component {
 
   render() {
+
+//username is colored inline
     const color = {color: this.props.color}
     const image = this.props.image
 
+//if the server compiled an image element, it get rendered
     if(image) {
       return (
         <div className="message">
           <span className="message-username" style={color}>{this.props.username}</span>
+          <span className="message-content">{this.props.content}</span>
           <div className="message-image-container" dangerouslySetInnerHTML={{__html: image}}></div>
         </div>
       )

@@ -15,7 +15,10 @@ class MessageList extends Component {
 
   render() {
 
+//the individual messages are mapped using the message templates
     const messageItems = this.props.messages.map( single => {
+
+//if the message type is notification, the system message elements get rendered
       if (single.type === 'postNotification') {
         return (
           <MessageSystem
@@ -25,6 +28,7 @@ class MessageList extends Component {
         )
       }
 
+//otherwise the message elements
       else {
         return (
           <Message

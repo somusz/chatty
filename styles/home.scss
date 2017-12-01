@@ -54,6 +54,7 @@
       overflow: hidden;
       margin: 5px;
       padding: 0 10px;
+      max-width: 50%;
     }
 
     .message-content {
@@ -71,6 +72,7 @@
       position: absolute;
       height: 250px;
       border: 1px solid grey;
+      right: 30%;
     }
 
     .message-image-container {
@@ -87,6 +89,7 @@
       position: fixed;
       right: 0;
       top: 0;
+      z-index: 1000;
     }
 
     .navbar-brand {

@@ -3,7 +3,6 @@ import Chat from './Chatbar.jsx';
 import Nav from './Nav.jsx';
 import MessageList from './MessageList.jsx';
 
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -16,22 +15,28 @@ class App extends Component {
     this.onNewMessage = this.onNewMessage.bind(this)
   }
 
+//when new message is coming from the chatbar, the message is passed to the server
   onNewMessage = (message) => {
     this.socket.send(JSON.stringify(message))
   }
 
   componentDidMount() {
+//on component mount, a new websocket is created
     this.socket = new WebSocket("ws://localhost:3001")
 
+//when message is coming in from the server,
+//a switch statement routes the message types
     this.socket.onmessage = (message) => {
       const data = JSON.parse(message.data)
 
+//'log' sets the number of online users
       switch (data.message.type) {
         case 'log':
           this.setState({
             userCount: data.count
           })
           break;
+//other types will merge into the messages container
         case 'postMessage':
         case 'postNotification':
           this.setState({
@@ -45,6 +50,7 @@ class App extends Component {
     }
   }
 
+//rendering the sub-components
   render() {
     return (
     <div>

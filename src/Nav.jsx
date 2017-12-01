@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 
+//rendering the nav bar with the user count
 class Nav extends Component {
   render() {
 

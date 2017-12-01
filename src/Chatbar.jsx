@@ -12,13 +12,17 @@ class Chat extends Component {
     this._onNameEnter = this._onNameEnter.bind(this)
   }
 
+//function for handling enter key presses on the message bar
   _onMessageEnter(event) {
     if (event.key === 'Enter') {
 
+//if nothing entered, the user is alerted
       if (event.target.value === '') {
         alert('say something')
       }
 
+//if something is entered, it get compiled to the current state
+//and pushed back in the newMessage function to App.jsx
       else {
 
         this.setState({
@@ -35,13 +39,17 @@ class Chat extends Component {
     }
   }
 
+//function for handling enter key presses on the username bar
   _onNameEnter(event) {
     if (event.key === 'Enter') {
 
+//on enter press the previous user get distinguished from the current one
       let previousUser = this.state.currentUser
 
+//if there is something entered
       if (event.target.value) {
 
+//the user and message data get updated only if the previous user if different than the current
         if (this.state.currentUser !== event.target.value) {
 
           this.setState({
@@ -54,6 +62,7 @@ class Chat extends Component {
         }
       }
 
+//if nothing was entered, the message similarly goes through with the "anonymous" default username
       else {
 
         if (this.state.currentUser !== event.target.defaultValue) {
@@ -69,6 +78,7 @@ class Chat extends Component {
     }
   }
 
+//rendering sub-components
   render() {
     return (
       <footer className="chatbar">
